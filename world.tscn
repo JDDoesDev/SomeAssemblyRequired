@@ -1,0 +1,63 @@
+[gd_scene load_steps=12 format=3 uid="uid://befuaqryd11xx"]
+
+[ext_resource type="PackedScene" uid="uid://duxsmuk2b3j6r" path="res://robot.tscn" id="1_57p0l"]
+[ext_resource type="PackedScene" uid="uid://did8rp14ojpij" path="res://robot_torso.tscn" id="2_ken4j"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sic6t"]
+sky_top_color = Color(0.772549, 0.811765, 0.870588, 1)
+sky_horizon_color = Color(0.743137, 0.745191, 0.750897, 1)
+sky_energy_multiplier = 0.55
+ground_horizon_color = Color(0.743137, 0.745191, 0.750897, 1)
+
+[sub_resource type="Sky" id="Sky_8wdhj"]
+sky_material = SubResource("ProceduralSkyMaterial_sic6t")
+
+[sub_resource type="Environment" id="Environment_xxyal"]
+background_mode = 2
+sky = SubResource("Sky_8wdhj")
+ssao_enabled = true
+sdfgi_enabled = true
+
+[sub_resource type="Gradient" id="Gradient_cjqrh"]
+offsets = PackedFloat32Array(0.177515, 0.633136)
+colors = PackedColorArray(0, 1, 0, 1, 0, 0, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_e8605"]
+frequency = 0.0773
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_441yx"]
+color_ramp = SubResource("Gradient_cjqrh")
+noise = SubResource("FastNoiseLite_e8605")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gdeyx"]
+albedo_texture = SubResource("NoiseTexture2D_441yx")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_6cuaj"]
+material = SubResource("StandardMaterial3D_gdeyx")
+size = Vector2(40, 40)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_lfsck"]
+data = PackedVector3Array(20, 0, 20, -20, 0, 20, 20, 0, -20, -20, 0, 20, -20, 0, -20, 20, 0, -20)
+
+[node name="World" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_xxyal")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.975177, -0.19176, 0.110712, 0.0990555, 0.82498, 0.556414, -0.198034, -0.531635, 0.823497, 0, 12.8746, 10.1233)
+shadow_enabled = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_6cuaj")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_lfsck")
+
+[node name="Robot" parent="." instance=ExtResource("1_57p0l")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.865596, 2.38419e-07, -4.91802)
+
+[node name="RobotTorso" parent="." instance=ExtResource("2_ken4j")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.8645, 0.87153, 0)

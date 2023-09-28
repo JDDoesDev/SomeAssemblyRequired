@@ -3,4 +3,4 @@
 
 addons/
 blender_exports/
-
+*.tmp
